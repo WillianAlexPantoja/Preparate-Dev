@@ -14,7 +14,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const ElevatorPitchInputSchema = z.object({
   pitch: z.string().describe('The elevator pitch to analyze.'),

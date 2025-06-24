@@ -8,7 +8,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const CvInputSchema = z.object({
   fullName: z.string().describe('The full name of the user.'),

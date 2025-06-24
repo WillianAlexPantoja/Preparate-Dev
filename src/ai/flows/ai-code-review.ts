@@ -11,7 +11,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const AiCodeReviewInputSchema = z.object({
   code: z.string().describe('The code solution to be reviewed.'),
