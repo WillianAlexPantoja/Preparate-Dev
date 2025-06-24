@@ -7,12 +7,12 @@ import Image from "next/image";
 import Link from 'next/link';
 
 const jobBoards = [
-  { name: "LinkedIn", url: "https://www.linkedin.com/jobs/", description: "La red profesional más grande del mundo.", category: "general", hint: "linkedin logo" },
-  { name: "GitHub Jobs", url: "https://github.com/jobs", description: "Directamente donde está el código.", category: "tech", hint: "github logo" },
-  { name: "We Work Remotely", url: "https://weworkremotely.com/", description: "La comunidad más grande de trabajo remoto.", category: "remoto", hint: "remote work" },
-  { name: "Get on Board", url: "https://www.getonbrd.com/", description: "Especializado en trabajos de tecnología en Latam y España.", category: "latam", hint: "rocket ship" },
-  { name: "Arc.dev", url: "https://arc.dev/remote-jobs", description: "Para desarrolladores remotos de élite.", category: "remoto", hint: "abstract letter a" },
-  { name: "Discords de Talento", url: "#", description: "Comunidades con canales de empleo exclusivos. (Explora en línea)", category: "comunidad", hint: "chat bubble" },
+  { name: "LinkedIn", url: "https://www.linkedin.com/jobs/", description: "La red profesional más grande del mundo.", category: "general", logo: "https://logo.clearbit.com/linkedin.com" },
+  { name: "GitHub Jobs", url: "https://github.com/jobs", description: "Directamente donde está el código.", category: "tech", logo: "https://logo.clearbit.com/github.com" },
+  { name: "We Work Remotely", url: "https://weworkremotely.com/", description: "La comunidad más grande de trabajo remoto.", category: "remoto", logo: "https://logo.clearbit.com/weworkremotely.com" },
+  { name: "Get on Board", url: "https://www.getonbrd.com/", description: "Especializado en trabajos de tecnología en Latam y España.", category: "latam", logo: "https://logo.clearbit.com/getonbrd.com" },
+  { name: "Arc.dev", url: "https://arc.dev/remote-jobs", description: "Para desarrolladores remotos de élite.", category: "remoto", logo: "https://logo.clearbit.com/arc.dev" },
+  { name: "Discords de Talento", url: "#", description: "Comunidades con canales de empleo exclusivos. (Explora en línea)", category: "comunidad", logo: "https://logo.clearbit.com/discord.com" },
 ];
 
 const filters = [
@@ -59,7 +59,7 @@ export default function JobsPage() {
              <Link key={board.name} href={board.url} target="_blank" rel="noopener noreferrer" className="block hover:shadow-lg transition-shadow rounded-lg">
                 <Card className="h-full">
                   <CardHeader className="flex flex-row items-center gap-4">
-                    <Image src={`https://placehold.co/40x40.png`} alt={`${board.name} logo`} width={40} height={40} className="rounded-sm" data-ai-hint={board.hint} />
+                    <Image src={board.logo} alt={`${board.name} logo`} width={40} height={40} className="rounded-sm" />
                     <CardTitle>{board.name}</CardTitle>
                   </CardHeader>
                   <CardContent>
