@@ -17,21 +17,21 @@ const MessageSchema = z.object({
 export type Message = z.infer<typeof MessageSchema>;
 
 // Input for the main interview flow
-export const ConductInterviewInputSchema = z.object({
+const ConductInterviewInputSchema = z.object({
   topic: z.string().describe('The topic for the interview questions (e.g., React, JavaScript, Behavioral).'),
   history: z.array(MessageSchema).describe('The history of the conversation so far.'),
 });
 export type ConductInterviewInput = z.infer<typeof ConductInterviewInputSchema>;
 
 // Output of the main interview flow
-export const ConductInterviewOutputSchema = z.object({
+const ConductInterviewOutputSchema = z.object({
   response: z.string().describe('The next question or statement from the AI interviewer.'),
   isFinished: z.boolean().describe('A boolean indicating if the interview has concluded.'),
 });
 export type ConductInterviewOutput = z.infer<typeof ConductInterviewOutputSchema>;
 
 // The main conversational flow
-export const conductInterviewFlow = ai.defineFlow(
+const conductInterviewFlow = ai.defineFlow(
   {
     name: 'conductInterviewFlow',
     inputSchema: ConductInterviewInputSchema,
@@ -83,14 +83,14 @@ export async function conductInterview(input: ConductInterviewInput): Promise<Co
 
 
 // Input for the evaluation flow
-export const EvaluateInterviewInputSchema = z.object({
+const EvaluateInterviewInputSchema = z.object({
     topic: z.string(),
     history: z.array(MessageSchema).describe('The complete transcript of the interview.'),
 });
 export type EvaluateInterviewInput = z.infer<typeof EvaluateInterviewInputSchema>;
 
 // Output for the evaluation flow
-export const EvaluateInterviewOutputSchema = z.object({
+const EvaluateInterviewOutputSchema = z.object({
   overallScore: z.number().min(1).max(10).describe('An overall score for the interview performance, from 1 to 10.'),
   summary: z.string().describe('A brief summary of the interview performance.'),
   strengths: z.string().describe('Positive feedback and strengths observed during the interview, formatted in Markdown.'),
@@ -99,7 +99,7 @@ export const EvaluateInterviewOutputSchema = z.object({
 export type EvaluateInterviewOutput = z.infer<typeof EvaluateInterviewOutputSchema>;
 
 // The evaluation flow
-export const evaluateInterviewFlow = ai.defineFlow(
+const evaluateInterviewFlow = ai.defineFlow(
     {
         name: 'evaluateInterviewFlow',
         inputSchema: EvaluateInterviewInputSchema,
