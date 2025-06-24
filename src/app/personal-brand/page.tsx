@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useActionState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { analyzeElevatorPitch, ElevatorPitchOutput } from '@/ai/flows/elevator-pitch-feedback';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Lightbulb, Star, BarChart, CheckCircle, XCircle, ArrowRight } from "lucide-react";
+import { Star, BarChart, CheckCircle, XCircle, ArrowRight } from "lucide-react";
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
@@ -27,7 +29,7 @@ function FeedbackDisplay({ data }: { data: ElevatorPitchOutput | null }) {
   return (
     <Card className="mt-6">
       <CardHeader>
-        <CardTitle>Tu Feedback</CardTitle>
+        <CardTitle>Feedback Personalizado de la IA</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -46,9 +48,10 @@ function FeedbackDisplay({ data }: { data: ElevatorPitchOutput | null }) {
             <Progress value={data.persuasivenessScore * 10} className="[&>div]:bg-accent" />
           </div>
         </div>
-        <div>
-          <h4 className="font-semibold flex items-center gap-2"><Lightbulb /> Puntos de mejora</h4>
-          <p className="text-muted-foreground mt-2 whitespace-pre-wrap">{data.feedback}</p>
+        <div className="p-4 border rounded-lg bg-muted/50">
+           <article className="prose prose-sm dark:prose-invert max-w-none">
+             <ReactMarkdown remarkPlugins={[remarkGfm]}>{data.feedback}</ReactMarkdown>
+           </article>
         </div>
       </CardContent>
     </Card>

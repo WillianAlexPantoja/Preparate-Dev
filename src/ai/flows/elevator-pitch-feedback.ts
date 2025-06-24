@@ -27,7 +27,7 @@ const ElevatorPitchOutputSchema = z.object({
   persuasivenessScore: z
     .number()
     .describe('A score from 1-10 indicating the persuasiveness of the pitch.'),
-  feedback: z.string().describe('Detailed feedback on how to improve the pitch.'),
+  feedback: z.string().describe('Detailed feedback on how to improve the pitch, formatted in Markdown. It should include headings, bullet points, and an improved version of the pitch.'),
 });
 export type ElevatorPitchOutput = z.infer<typeof ElevatorPitchOutputSchema>;
 
@@ -35,16 +35,24 @@ const elevatorPitchFeedbackPrompt = ai.definePrompt({
   name: 'elevatorPitchFeedbackPrompt',
   input: {schema: ElevatorPitchInputSchema},
   output: {schema: ElevatorPitchOutputSchema},
-  prompt: `Eres un coach de carrera experto que da feedback sobre "elevator pitches".
+  prompt: `Eres un coach de carrera experto que da feedback sobre "elevator pitches". Tu objetivo es ayudar a un desarrollador junior a sonar más profesional y convincente.
   
-  Analiza el siguiente elevator pitch y proporciona feedback sobre su claridad y poder de persuasión.
-  Responde SIEMPRE en español.
+Analiza el siguiente elevator pitch y proporciona:
+1.  Una puntuación de claridad (1-10).
+2.  Una puntuación de persuasión (1-10).
+3.  Un feedback detallado sobre cómo mejorar el pitch.
 
-  Proporciona una puntuación de claridad (1-10), una puntuación de persuasión (1-10) y un feedback detallado sobre cómo mejorar el pitch.
+**Instrucciones para el formato del feedback:**
+-   Responde SIEMPRE en español.
+-   El feedback debe estar en formato Markdown.
+-   Utiliza un encabezado de nivel 3 (###) para la sección "Puntos Clave para Mejorar".
+-   Dentro de esa sección, utiliza una lista con viñetas (-) para dar 3 o 4 consejos específicos. Usa **negrita** para resaltar los conceptos clave como "Objetivo" o "Llamada a la acción".
+-   Incluye una sección con un encabezado de nivel 3 (###) llamada "Ejemplo de Pitch Mejorado" donde reescribas el pitch del usuario aplicando tus consejos.
+-   Finaliza con una frase motivadora corta y amigable.
 
-  Elevator Pitch: {{{pitch}}}
-
-  Tu Feedback (puntuación de claridad, puntuación de persuasión y feedback detallado):`,
+Elevator Pitch:
+{{{pitch}}}
+`,
 });
 
 const analyzeElevatorPitchFlow = ai.defineFlow(
