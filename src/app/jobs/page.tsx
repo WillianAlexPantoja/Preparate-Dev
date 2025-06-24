@@ -1,0 +1,70 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+
+const jobBoards = [
+  { name: "LinkedIn", description: "La red profesional más grande del mundo.", category: "general", hint: "linkedin logo" },
+  { name: "GitHub Jobs", description: "Directamente donde está el código.", category: "tech", hint: "github logo" },
+  { name: "We Work Remotely", description: "La comunidad más grande de trabajo remoto.", category: "remoto", hint: "remote work" },
+  { name: "Get on Board", description: "Especializado en trabajos de tecnología en Latam y España.", category: "latam", hint: "rocket ship" },
+  { name: "Arc.dev", description: "Para desarrolladores remotos de élite.", category: "remoto", hint: "abstract letter a" },
+  { name: "Discords de Talento", description: "Comunidades con canales de empleo exclusivos.", category: "comunidad", hint: "chat bubble" },
+];
+
+const filters = [
+  { label: "Todos", value: "all" },
+  { label: "General", value: "general" },
+  { label: "Tech Específico", value: "tech" },
+  { label: "Remoto", value: "remoto" },
+  { label: "Latam/España", value: "latam" },
+  { label: "Comunidad", value: "comunidad" },
+];
+
+
+export default function JobsPage() {
+  return (
+    <div className="p-4 md:p-8">
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold">Canales para Buscar Empleo</h1>
+        <p className="text-muted-foreground">Explora las mejores plataformas para encontrar tu primer trabajo en tecnología.</p>
+      </header>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Filtra por categoría</CardTitle>
+          <div className="flex flex-wrap gap-2 pt-2">
+            {filters.map(filter => (
+              <Button key={filter.value} variant={filter.value === "all" ? "default" : "outline"}>
+                {filter.label}
+              </Button>
+            ))}
+          </div>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {jobBoards.map(board => (
+            <Card key={board.name} className="hover:shadow-lg transition-shadow">
+              <CardHeader className="flex flex-row items-center gap-4">
+                <Image src={`https://placehold.co/40x40.png`} alt={`${board.name} logo`} width={40} height={40} className="rounded-sm" data-ai-hint={board.hint} />
+                <CardTitle>{board.name}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">{board.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </CardContent>
+      </Card>
+      
+       <Card className="mt-8">
+        <CardHeader>
+          <CardTitle>Tip Rápido</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-lg">
+            <strong>Aprende a leer entre líneas una oferta:</strong> No te desanimes si no cumples el 100% de los requisitos. Muchas veces las "listas de deseos" de las empresas son flexibles. Si cumples con el 60-70% y demuestras ganas de aprender, ¡aplica!
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
