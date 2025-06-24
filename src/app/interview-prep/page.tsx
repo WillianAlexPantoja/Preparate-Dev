@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { aiCodeReview, AiCodeReviewOutput } from '@/ai/flows/ai-code-review';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Lightbulb, ShieldCheck, FileCode } from "lucide-react";
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type FormState = {
   data: AiCodeReviewOutput | null;
@@ -36,6 +38,82 @@ function PerformanceBadge({ evaluation }: { evaluation: AiCodeReviewOutput['perf
     };
     const variant = variants[evaluation] || 'outline';
     return <Badge variant={variant} className="capitalize">{evaluation.toLowerCase()}</Badge>
+}
+
+function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+        <Button type="submit" size="lg" className="w-full" disabled={pending}>
+        {pending ? (
+            <>
+            <svg className="animate-spin -ml-1 mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Evaluando...
+            </>
+        ) : (
+            'Evaluar mi Solución'
+        )}
+        </Button>
+    );
+}
+
+function ResultsDisplay({ data }: { data: AiCodeReviewOutput | null }) {
+    const { pending } = useFormStatus();
+
+    if (pending) {
+        return (
+            <Card className="h-full sticky top-8">
+                <CardHeader>
+                    <Skeleton className="h-8 w-3/4 rounded-md" />
+                </CardHeader>
+                <CardContent className="space-y-6 pt-6">
+                    <div>
+                        <Skeleton className="h-6 w-1/2 mb-2 rounded-md" />
+                        <Skeleton className="h-6 w-1/4 rounded-full" />
+                    </div>
+                    <div>
+                        <Skeleton className="h-6 w-1/2 mb-2 rounded-md" />
+                        <Skeleton className="h-4 w-full mt-2 rounded-md" />
+                        <Skeleton className="h-4 w-full rounded-md" />
+                        <Skeleton className="h-4 w-5/6 rounded-md" />
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    if (data) {
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle>Resultados de la Revisión</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div>
+                        <h4 className="font-semibold flex items-center gap-2"><ShieldCheck /> Evaluación de Rendimiento</h4>
+                        <PerformanceBadge evaluation={data.performanceEvaluation} />
+                    </div>
+                    <div>
+                        <h4 className="font-semibold flex items-center gap-2"><Lightbulb /> Feedback del AI</h4>
+                        <p className="text-muted-foreground mt-2 whitespace-pre-wrap">{data.feedback}</p>
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+    
+    return (
+        <Card className="h-full sticky top-8">
+             <CardHeader>
+                <CardTitle>Esperando tu solución...</CardTitle>
+             </CardHeader>
+             <CardContent className="flex flex-col items-center justify-center text-center text-muted-foreground h-full py-12">
+                <p>Completa el desafío, escribe tu código y haz clic en "Evaluar mi Solución" para recibir feedback instantáneo.</p>
+             </CardContent>
+        </Card>
+    );
 }
 
 export default function InterviewPrepPage() {
@@ -73,8 +151,8 @@ export default function InterviewPrepPage() {
                 <p className="text-muted-foreground">Pon a prueba tus habilidades con desafíos técnicos y recibe feedback de nuestra IA.</p>
             </header>
 
-            <div className="grid lg:grid-cols-3 gap-8 items-start">
-                <form action={formAction} className="lg:col-span-2 space-y-6">
+            <form action={formAction} className="grid lg:grid-cols-3 gap-8 items-start">
+                <div className="lg:col-span-2 space-y-6">
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2"><FileCode /> Desafío Técnico</CardTitle>
@@ -108,41 +186,14 @@ export default function InterviewPrepPage() {
                         </CardContent>
                     </Card>
                     
-                    <Button type="submit" size="lg" className="w-full">
-                        Evaluar mi Solución
-                    </Button>
+                    <SubmitButton />
                     {state.error && <p className="text-sm text-destructive mt-2">{state.error}</p>}
-                </form>
+                </div>
 
                 <div className="lg:col-span-1 space-y-6">
-                    {state.data ? (
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Resultados de la Revisión</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div>
-                                    <h4 className="font-semibold flex items-center gap-2"><ShieldCheck /> Evaluación de Rendimiento</h4>
-                                    <PerformanceBadge evaluation={state.data.performanceEvaluation} />
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold flex items-center gap-2"><Lightbulb /> Feedback del AI</h4>
-                                    <p className="text-muted-foreground mt-2 whitespace-pre-wrap">{state.data.feedback}</p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ) : (
-                        <Card className="h-full sticky top-8">
-                             <CardHeader>
-                                <CardTitle>Esperando tu solución...</CardTitle>
-                             </CardHeader>
-                             <CardContent className="flex flex-col items-center justify-center text-center text-muted-foreground h-full py-12">
-                                <p>Completa el desafío, escribe tu código y haz clic en "Evaluar mi Solución" para recibir feedback instantáneo.</p>
-                             </CardContent>
-                        </Card>
-                    )}
+                    <ResultsDisplay data={state.data} />
                 </div>
-            </div>
+            </form>
         </div>
     );
 }
