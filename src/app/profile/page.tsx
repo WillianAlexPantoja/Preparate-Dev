@@ -1,6 +1,7 @@
 'use client';
 
 import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { generateCv, CvOutput } from '@/ai/flows/cv-generator';
@@ -11,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle, XCircle, Lightbulb, FileText } from "lucide-react";
+import { Skeleton } from '@/components/ui/skeleton';
 
 type FormState = {
   data: CvOutput | null;
@@ -23,6 +25,108 @@ const initialState: FormState = {
   error: null,
   message: null
 };
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? (
+        <>
+          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Generando...
+        </>
+      ) : (
+        'Generar CV'
+      )}
+    </Button>
+  );
+}
+
+function CvResults({ state }: { state: FormState }) {
+  const { pending } = useFormStatus();
+
+  if (pending) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-8 w-1/2 rounded-md" />
+            <Skeleton className="h-4 w-3/4 mt-2 rounded-md" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-4 w-full rounded-md" />
+            <Skeleton className="h-4 w-full rounded-md" />
+            <Skeleton className="h-4 w-5/6 rounded-md" />
+            <br />
+            <Skeleton className="h-6 w-1/3 rounded-md" />
+            <Skeleton className="h-4 w-full rounded-md" />
+            <Skeleton className="h-4 w-5/6 rounded-md" />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-8 w-1/2 rounded-md" />
+            <Skeleton className="h-4 w-3/4 mt-2 rounded-md" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-4 w-full rounded-md" />
+            <Skeleton className="h-4 w-full rounded-md" />
+            <Skeleton className="h-4 w-5/6 rounded-md" />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (state.data) {
+    return (
+      <>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><FileText /> CV Generado</CardTitle>
+            <CardDescription>Esta es una vista previa de tu CV. Puedes copiar el contenido.</CardDescription>
+          </CardHeader>
+          <CardContent className="p-4 border rounded-lg bg-muted/50">
+            <article className="prose prose-sm dark:prose-invert max-w-none">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {state.data.cvContent}
+              </ReactMarkdown>
+            </article>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Lightbulb /> Feedback de la IA</CardTitle>
+            <CardDescription>Sugerencias para hacer tu CV aún más impactante.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <article className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {state.data.feedback}
+              </ReactMarkdown>
+            </article>
+          </CardContent>
+        </Card>
+      </>
+    );
+  }
+
+  return (
+    <Card className="h-full sticky top-8">
+      <CardHeader>
+        <CardTitle>Esperando tu información...</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col items-center justify-center text-center text-muted-foreground h-full py-12">
+        <p>Completa el formulario y haz clic en "Generar CV" para recibir una versión creada por IA y feedback para mejorarla.</p>
+      </CardContent>
+    </Card>
+  );
+}
+
 
 function CvGeneratorTab() {
   const submitAction = async (prevState: FormState, formData: FormData): Promise<FormState> => {
@@ -50,89 +154,53 @@ function CvGeneratorTab() {
   const [state, formAction] = useActionState(submitAction, initialState);
 
   return (
-    <div className="grid md:grid-cols-2 gap-8">
-      <form action={formAction}>
-        <Card>
-          <CardHeader>
-            <CardTitle>Generador de CV</CardTitle>
-            <CardDescription>Completa tu información para generar un CV profesional asistido por IA.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="fullName">Nombre Completo</Label>
-                <Input name="fullName" id="fullName" placeholder="Ej: Ada Lovelace" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input name="email" id="email" type="email" placeholder="ej: ada@example.com" required />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="summary">Resumen Profesional</Label>
-              <Textarea name="summary" id="summary" placeholder="Apasionado desarrollador con experiencia en..." required />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="experience">Experiencia Laboral</Label>
-              <Textarea name="experience" id="experience" placeholder="Describe tu experiencia laboral, un puesto por línea." rows={4} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="education">Educación</Label>
-              <Textarea name="education" id="education" placeholder="Describe tu formación académica." rows={3} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="skills">Habilidades</Label>
-              <Input name="skills" id="skills" placeholder="Ej: React, Next.js, TypeScript, Node.js" />
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button type="submit" className="w-full">Generar CV</Button>
-          </CardFooter>
-          {state.error && <p className="text-sm text-destructive p-4">{state.error}</p>}
-        </Card>
-      </form>
-      <div className="space-y-6">
-        {state.data ? (
-          <>
+    <form action={formAction}>
+      <div className="grid md:grid-cols-2 gap-8">
+        <div>
             <Card>
               <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><FileText /> CV Generado</CardTitle>
-                  <CardDescription>Esta es una vista previa de tu CV. Puedes copiar el contenido.</CardDescription>
+                <CardTitle>Generador de CV</CardTitle>
+                <CardDescription>Completa tu información para generar un CV profesional asistido por IA.</CardDescription>
               </CardHeader>
-              <CardContent className="p-4 border rounded-lg bg-muted/50">
-                 <article className="prose prose-sm dark:prose-invert max-w-none">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {state.data.cvContent}
-                    </ReactMarkdown>
-                  </article>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="fullName">Nombre Completo</Label>
+                    <Input name="fullName" id="fullName" placeholder="Ej: Ada Lovelace" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input name="email" id="email" type="email" placeholder="ej: ada@example.com" required />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="summary">Resumen Profesional</Label>
+                  <Textarea name="summary" id="summary" placeholder="Apasionado desarrollador con experiencia en..." required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="experience">Experiencia Laboral</Label>
+                  <Textarea name="experience" id="experience" placeholder="Describe tu experiencia laboral, un puesto por línea." rows={4} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="education">Educación</Label>
+                  <Textarea name="education" id="education" placeholder="Describe tu formación académica." rows={3} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="skills">Habilidades</Label>
+                  <Input name="skills" id="skills" placeholder="Ej: React, Next.js, TypeScript, Node.js" />
+                </div>
               </CardContent>
+              <CardFooter>
+                <SubmitButton />
+              </CardFooter>
+              {state.error && <p className="text-sm text-destructive p-4">{state.error}</p>}
             </Card>
-            <Card>
-              <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><Lightbulb /> Feedback de la IA</CardTitle>
-                  <CardDescription>Sugerencias para hacer tu CV aún más impactante.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <article className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
-                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {state.data.feedback}
-                   </ReactMarkdown>
-                </article>
-              </CardContent>
-            </Card>
-          </>
-        ) : (
-          <Card className="h-full sticky top-8">
-            <CardHeader>
-              <CardTitle>Esperando tu información...</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col items-center justify-center text-center text-muted-foreground h-full py-12">
-              <p>Completa el formulario y haz clic en "Generar CV" para recibir una versión creada por IA y feedback para mejorarla.</p>
-            </CardContent>
-          </Card>
-        )}
+        </div>
+        <div className="space-y-6">
+          <CvResults state={state} />
+        </div>
       </div>
-    </div>
+    </form>
   )
 }
 
