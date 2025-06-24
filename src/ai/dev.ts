@@ -3,3 +3,4 @@ config();
 
 import '@/ai/flows/ai-code-review.ts';
 import '@/ai/flows/elevator-pitch-feedback.ts';
+import '@/ai/flows/cv-generator.ts';
