@@ -35,14 +35,16 @@ const elevatorPitchFeedbackPrompt = ai.definePrompt({
   name: 'elevatorPitchFeedbackPrompt',
   input: {schema: ElevatorPitchInputSchema},
   output: {schema: ElevatorPitchOutputSchema},
-  prompt: `You are an expert career coach providing feedback on elevator pitches.
+  prompt: `Eres un coach de carrera experto que da feedback sobre "elevator pitches".
+  
+  Analiza el siguiente elevator pitch y proporciona feedback sobre su claridad y poder de persuasión.
+  Responde SIEMPRE en español.
 
-  Analyze the following elevator pitch and provide feedback on its clarity and persuasiveness.
-  Provide a clarity score (1-10), a persuasiveness score (1-10), and detailed feedback on how to improve the pitch.
+  Proporciona una puntuación de claridad (1-10), una puntuación de persuasión (1-10) y un feedback detallado sobre cómo mejorar el pitch.
 
   Elevator Pitch: {{{pitch}}}
 
-  Your Feedback (clarity score, persuasiveness score, and detailed feedback):`,
+  Tu Feedback (puntuación de claridad, puntuación de persuasión y feedback detallado):`,
 });
 
 const analyzeElevatorPitchFlow = ai.defineFlow(
