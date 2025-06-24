@@ -1,6 +1,8 @@
 'use client';
 
 import { useActionState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { generateCv, CvOutput } from '@/ai/flows/cv-generator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
@@ -94,18 +96,28 @@ function CvGeneratorTab() {
           <>
             <Card>
               <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><FileText /> Plantilla de CV Generada</CardTitle>
+                  <CardTitle className="flex items-center gap-2"><FileText /> CV Generado</CardTitle>
+                  <CardDescription>Esta es una vista previa de tu CV. Puedes copiar el contenido.</CardDescription>
               </CardHeader>
-              <CardContent className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap p-4 border rounded-lg bg-background">
-                {state.data.cvContent}
+              <CardContent className="p-4 border rounded-lg bg-muted/50">
+                 <article className="prose prose-sm dark:prose-invert max-w-none">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {state.data.cvContent}
+                    </ReactMarkdown>
+                  </article>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
                   <CardTitle className="flex items-center gap-2"><Lightbulb /> Feedback de la IA</CardTitle>
+                  <CardDescription>Sugerencias para hacer tu CV aún más impactante.</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">{state.data.feedback}</p>
+                <article className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
+                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {state.data.feedback}
+                   </ReactMarkdown>
+                </article>
               </CardContent>
             </Card>
           </>

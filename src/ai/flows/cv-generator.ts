@@ -48,17 +48,17 @@ Your task is to generate a professional CV in Spanish based on the user's inform
 
 **Instructions:**
 1.  **Generate CV Content:** Create a clean, professional, and well-structured CV in Markdown format.
-    - Start with the full name and email.
-    - Include the professional summary.
-    - Create clear sections for "Experiencia Laboral", "Educación", and "Habilidades".
+    - Start with the full name as a main heading (#) and the email right below it.
+    - Create clear sections for "Experiencia Laboral", "Educación", and "Habilidades" using level 2 headings (##).
+    - Use a horizontal rule (\`---\`) to visually separate each major section.
     - For the skills, format them as a bulleted list.
     - Ensure the tone is professional and tailored for a tech industry role.
 
 2.  **Provide Feedback:** Analyze the user's input and provide concise, actionable feedback.
-    - Comment on the strength of the professional summary.
-    - Suggest improvements for describing experience and education.
-    - Mention if any key information seems to be missing.
-    - The feedback should be encouraging and helpful.
+    - Format the feedback using Markdown.
+    - Use level 3 headings (###) for feedback categories (e.g., "### Resumen Profesional", "### Puntos Fuertes").
+    - Use **bold** to highlight key advice and use bulleted lists (-) for specific suggestions.
+    - The feedback should be encouraging, constructive, and friendly.
   `,
 });
 
