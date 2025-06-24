@@ -26,7 +26,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <div className="flex flex-col min-h-screen">
           <Navbar />
-          <main className="flex-grow container">
+          <main className="flex-grow container mx-auto">
             {children}
           </main>
           <Toaster />

@@ -19,7 +19,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
-        <div className="mr-8 flex items-center">
+        <div className="flex-1 flex justify-start">
           <Link href="/" className="flex items-center gap-2">
             <Bot className="w-8 h-8 text-primary" />
             <span className="font-bold hidden sm:inline-block">
@@ -27,7 +27,8 @@ export function Navbar() {
             </span>
           </Link>
         </div>
-        <nav className="flex items-center gap-4 text-sm lg:gap-6">
+        
+        <nav className="hidden md:flex justify-center items-center gap-4 text-sm lg:gap-6">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -41,6 +42,10 @@ export function Navbar() {
             </Link>
           ))}
         </nav>
+
+        <div className="flex-1 flex justify-end">
+          {/* Placeholder for future buttons */}
+        </div>
       </div>
     </header>
   );
