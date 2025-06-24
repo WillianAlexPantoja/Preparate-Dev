@@ -1,14 +1,18 @@
+'use client';
+
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from 'next/link';
 
 const jobBoards = [
-  { name: "LinkedIn", description: "La red profesional más grande del mundo.", category: "general", hint: "linkedin logo" },
-  { name: "GitHub Jobs", description: "Directamente donde está el código.", category: "tech", hint: "github logo" },
-  { name: "We Work Remotely", description: "La comunidad más grande de trabajo remoto.", category: "remoto", hint: "remote work" },
-  { name: "Get on Board", description: "Especializado en trabajos de tecnología en Latam y España.", category: "latam", hint: "rocket ship" },
-  { name: "Arc.dev", description: "Para desarrolladores remotos de élite.", category: "remoto", hint: "abstract letter a" },
-  { name: "Discords de Talento", description: "Comunidades con canales de empleo exclusivos.", category: "comunidad", hint: "chat bubble" },
+  { name: "LinkedIn", url: "https://www.linkedin.com/jobs/", description: "La red profesional más grande del mundo.", category: "general", hint: "linkedin logo" },
+  { name: "GitHub Jobs", url: "https://github.com/jobs", description: "Directamente donde está el código.", category: "tech", hint: "github logo" },
+  { name: "We Work Remotely", url: "https://weworkremotely.com/", description: "La comunidad más grande de trabajo remoto.", category: "remoto", hint: "remote work" },
+  { name: "Get on Board", url: "https://www.getonbrd.com/", description: "Especializado en trabajos de tecnología en Latam y España.", category: "latam", hint: "rocket ship" },
+  { name: "Arc.dev", url: "https://arc.dev/remote-jobs", description: "Para desarrolladores remotos de élite.", category: "remoto", hint: "abstract letter a" },
+  { name: "Discords de Talento", url: "#", description: "Comunidades con canales de empleo exclusivos. (Explora en línea)", category: "comunidad", hint: "chat bubble" },
 ];
 
 const filters = [
@@ -22,6 +26,12 @@ const filters = [
 
 
 export default function JobsPage() {
+  const [activeFilter, setActiveFilter] = useState('all');
+
+  const filteredBoards = activeFilter === 'all' 
+    ? jobBoards 
+    : jobBoards.filter(board => board.category === activeFilter);
+
   return (
     <div className="p-4 md:p-8">
       <header className="mb-8">
@@ -34,23 +44,29 @@ export default function JobsPage() {
           <CardTitle>Filtra por categoría</CardTitle>
           <div className="flex flex-wrap gap-2 pt-2">
             {filters.map(filter => (
-              <Button key={filter.value} variant={filter.value === "all" ? "default" : "outline"}>
+              <Button 
+                key={filter.value} 
+                variant={activeFilter === filter.value ? "default" : "outline"}
+                onClick={() => setActiveFilter(filter.value)}
+              >
                 {filter.label}
               </Button>
             ))}
           </div>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {jobBoards.map(board => (
-            <Card key={board.name} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="flex flex-row items-center gap-4">
-                <Image src={`https://placehold.co/40x40.png`} alt={`${board.name} logo`} width={40} height={40} className="rounded-sm" data-ai-hint={board.hint} />
-                <CardTitle>{board.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">{board.description}</p>
-              </CardContent>
-            </Card>
+          {filteredBoards.map(board => (
+             <Link key={board.name} href={board.url} target="_blank" rel="noopener noreferrer" className="block hover:shadow-lg transition-shadow rounded-lg">
+                <Card className="h-full">
+                  <CardHeader className="flex flex-row items-center gap-4">
+                    <Image src={`https://placehold.co/40x40.png`} alt={`${board.name} logo`} width={40} height={40} className="rounded-sm" data-ai-hint={board.hint} />
+                    <CardTitle>{board.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">{board.description}</p>
+                  </CardContent>
+                </Card>
+            </Link>
           ))}
         </CardContent>
       </Card>
