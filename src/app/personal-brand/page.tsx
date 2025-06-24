@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { useFormState } from 'react-dom';
+import { useState, useActionState } from 'react';
 import { analyzeElevatorPitch, ElevatorPitchOutput } from '@/ai/flows/elevator-pitch-feedback';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -58,7 +57,7 @@ function FeedbackDisplay({ data }: { data: ElevatorPitchOutput | null }) {
 
 function ElevatorPitchSimulator() {
     const [pitch, setPitch] = useState('');
-    const [state, formAction] = useFormState(
+    const [state, formAction] = useActionState(
       async (prevState: FormState, formData: FormData): Promise<FormState> => {
         const pitchText = formData.get('pitch') as string;
         if (!pitchText || pitchText.length < 20) {

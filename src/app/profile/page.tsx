@@ -1,6 +1,6 @@
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { generateCv, CvOutput } from '@/ai/flows/cv-generator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
@@ -45,7 +45,7 @@ function CvGeneratorTab() {
       }
   };
 
-  const [state, formAction] = useFormState(submitAction, initialState);
+  const [state, formAction] = useActionState(submitAction, initialState);
 
   return (
     <div className="grid md:grid-cols-2 gap-8">

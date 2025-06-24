@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { useFormState } from 'react-dom';
+import { useState, useActionState } from 'react';
 import { aiCodeReview, AiCodeReviewOutput } from '@/ai/flows/ai-code-review';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -65,7 +64,7 @@ export default function InterviewPrepPage() {
         }
     };
 
-    const [state, formAction] = useFormState(submitAction, initialState);
+    const [state, formAction] = useActionState(submitAction, initialState);
 
     return (
         <div className="p-4 md:p-8">
