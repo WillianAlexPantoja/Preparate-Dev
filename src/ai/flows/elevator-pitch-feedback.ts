@@ -1,4 +1,3 @@
-// use server'
 'use server';
 /**
  * @fileOverview This file defines a Genkit flow for providing feedback on elevator pitches.
